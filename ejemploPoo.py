@@ -1,24 +1,24 @@
 from datetime import datetime
 
+# Clase base
 class Vehiculo:
-    def __init__(self, marca, modelo, año, operador, tipo):
+    def __init__(self, marca, modelo, anio, operador, tipo):
         self._marca = marca
         self._modelo = modelo
-        self._año = año
+        self._anio = anio
         self._estado = "Operativo"
         self._fecha_ultimo_mantenimiento = None
         self._operador = operador
         self._tipo = tipo
 
-    # Método para mostrar la información del vehículo
     def mostrar_informacion(self):
         info = (
             f"Marca: {self._marca}\n"
             f"Modelo: {self._modelo}\n"
-            f"Año: {self._año}\n"
+            f"Año: {self._anio}\n"
             f"Estado: {self._estado}\n"
-            f"Persona a cargo: {self._operador}\n"
-            f"Tipo de vehiculo: {self._tipo}"
+            f"Operador: {self._operador}\n"
+            f"Tipo: {self._tipo}\n"
         )
         if self._fecha_ultimo_mantenimiento:
             info += f"Último mantenimiento: {self._fecha_ultimo_mantenimiento}\n"
@@ -26,153 +26,125 @@ class Vehiculo:
             info += "Último mantenimiento: No registrado\n"
         return info
 
-    # Método para registrar mantenimiento
     def registrar_mantenimiento(self):
         self._estado = "En mantenimiento"
         self._fecha_ultimo_mantenimiento = datetime.now().strftime("%Y-%m-%d %H:%M:%S")
         print("Mantenimiento registrado.")
-        
-    # Método para cambiar el estado a operativo
+
     def cambiar_a_operativo(self):
         self._estado = "Operativo"
         print("El vehículo está ahora operativo.")
 
-    def calcular_costo_operativo(self):
-        pass  # Este es un método general que no hace nada en la clase base
-
- # Implementación de herencia
-
+# Subclase Vehículo de Transporte
 class VehiculoTransporte(Vehiculo):
-    def __init__(self, marca, modelo, año, operador, capacidad_carga, tipo):
-        super().__init__(marca, modelo, año, operador, tipo)  # Llamada al constructor de la clase base
-        self._kilometraje = 0  # Inicializa el kilometraje en 0
+    def __init__(self, marca, modelo, anio, operador, capacidad_carga):
+        super().__init__(marca, modelo, anio, operador, "Vehículo de Transporte")
+        self._kilometraje = 0
         self._capacidad_carga = capacidad_carga
 
-    # Método para registrar un viaje, sumando kilómetros al kilometraje
-    def registrar_viaje(self, km: float):
+    def registrar_viaje(self, km):
         self._kilometraje += km
-        print(f"Se han agregado {km} km. Total de kilometraje: {self._kilometraje} km.")
+        print(f"{km} km añadidos. Total: {self._kilometraje} km.")
 
-    # Sobrescribir el método mostrar_informacion
     def mostrar_informacion(self):
-        info = super().mostrar_informacion()  # Llamada al método de la clase base
+        info = super().mostrar_informacion()
         info += f"Kilometraje: {self._kilometraje} km\n"
         info += f"Capacidad de carga: {self._capacidad_carga} toneladas\n"
         return info
 
-    def calcular_costo_operativo(self):
-        costo_por_km = 0.05  # Costo por kilómetro
-        costo = self._kilometraje * costo_por_km
-        print(f"El costo operativo del vehículo de transporte es: ${costo:.2f}")
-        return costo
-
-    
-
+# Subclase Maquinaria Pesada
 class MaquinariaPesada(Vehiculo):
-    def __init__(self, marca, modelo, año, tipo):
-        super().__init__(marca, modelo, año)  # Llamada al constructor de la clase base
-        self._horometro = 0  # Inicializa el horómetro en 0
-        self._tipo = tipo  # Tipo de maquinaria (e.g., retroexcavadora, bulldozer)
+    def __init__(self, marca, modelo, anio, operador, tipo_maquinaria):
+        super().__init__(marca, modelo, anio, operador, "Maquinaria Pesada")
+        self._horometro = 0
+        self._tipo_maquinaria = tipo_maquinaria
 
-    # Método para registrar las horas de trabajo
-    def registrar_horas_trabajo(self, horas: float):
+    def registrar_horas_trabajo(self, horas):
         self._horometro += horas
-        print(f"Se han agregado {horas} horas. Total de horas de trabajo: {self._horometro} horas.")
+        print(f"{horas} horas añadidas. Total: {self._horometro} horas.")
 
-    # Método para realizar trabajo específico
-    def realizar_trabajo(self):
-        print(f"La {self._tipo} está realizando trabajo.")
-        
-    # Sobrescribir el método mostrar_informacion
     def mostrar_informacion(self):
-        info = super().mostrar_informacion()  # Llamada al método de la clase base
+        info = super().mostrar_informacion()
         info += f"Horómetro: {self._horometro} horas\n"
-        info += f"Tipo de maquinaria: {self._tipo}\n"
+        info += f"Tipo de maquinaria: {self._tipo_maquinaria}\n"
         return info
 
+# Lista global de vehículos
+vehiculos = []
 
-class Gallineta(MaquinariaPesada):
-    def __init__(self, marca, modelo, año):
-        super().__init__(marca, modelo, año, "Gallineta")
+# Menú CRUD
+while True:
+    print("\n------- Control y registro de vehículos -------")
+    print("1. Ingresar vehículo")
+    print("2. Ver vehículos")
+    print("3. Editar vehículo")
+    print("4. Eliminar vehículo")
+    print("5. Salir")
+    opcion = input("Seleccione una opción: ")
 
-    # Método para realizar trabajo específico para Gallineta
-    def realizar_trabajo(self):
-        print("La Gallineta está excavando en terreno.")
+    if opcion == "1":
+        print("1. Vehículo de transporte")
+        print("2. Maquinaria pesada")
+        tipo = input("Seleccione el tipo de vehículo: ")
 
-class Retroexcavadora(MaquinariaPesada):
-    def __init__(self, marca, modelo, año):
-        super().__init__(marca, modelo, año, "Retroexcavadora")
+        marca = input("Ingrese la marca: ")
+        modelo = input("Ingrese el modelo: ")
+        anio = int(input("Ingrese el año: "))
+        operador = input("Ingrese el operador: ")
 
-    # Método para realizar trabajo específico para Retroexcavadora
-    def realizar_trabajo(self):
-        print("La Retroexcavadora está excavando y moviendo tierra.")
+        if tipo == "1":
+            capacidad_carga = float(input("Ingrese la capacidad de carga (en toneladas): "))
+            vehiculo = VehiculoTransporte(marca, modelo, anio, operador, capacidad_carga)
+        elif tipo == "2":
+            tipo_maquinaria = input("Ingrese el tipo de maquinaria (e.g., Gallineta, Retroexcavadora): ")
+            vehiculo = MaquinariaPesada(marca, modelo, anio, operador, tipo_maquinaria)
+        else:
+            print("Opción inválida.")
+            continue
 
-    def calcular_costo_operativo(self):
-        costo_por_hora = 10  # Costo por hora de uso (ajustable)
-        costo = self._horometro * costo_por_hora
-        print(f"El costo operativo de la maquinaria pesada es: ${costo:.2f}")
-        return costo
+        vehiculos.append(vehiculo)
+        print("Vehículo registrado exitosamente.")
 
+    elif opcion == "2":
+        if not vehiculos:
+            print("No hay vehículos registrados.")
+        else:
+            for i, vehiculo in enumerate(vehiculos, 1):
+                print(f"\n--- Vehículo {i} ---")
+                print(vehiculo.mostrar_informacion())
 
-# Pruebas
-# Crear instancias de vehículos y maquinaria
-camioneta = VehiculoTransporte("Toyota", "Hilux", 2020, 1.5)
-camion = VehiculoTransporte("Volvo", "FH16", 2019, 25)
+    elif opcion == "3":
+        if not vehiculos:
+            print("No hay vehículos registrados.")
+        else:
+            for i, vehiculo in enumerate(vehiculos, 1):
+                print(f"{i}. {vehiculo._marca} {vehiculo._modelo}")
+            indice = int(input("Seleccione el número del vehículo a editar: ")) - 1
 
-gallineta = Gallineta("Caterpillar", "G450", 2021)
-retroexcavadora = Retroexcavadora("John Deere", "310L", 2020)
+            if 0 <= indice < len(vehiculos):
+                vehiculo = vehiculos[indice]
+                vehiculo._operador = input("Ingrese el nuevo operador: ")
+                print("Operador actualizado.")
+            else:
+                print("Selección inválida.")
 
-# Mostrar información inicial
-print(camioneta.mostrar_informacion())
-print(camion.mostrar_informacion())
-print(gallineta.mostrar_informacion())
-print(retroexcavadora.mostrar_informacion())
+    elif opcion == "4":
+        if not vehiculos:
+            print("No hay vehículos registrados.")
+        else:
+            for i, vehiculo in enumerate(vehiculos, 1):
+                print(f"{i}. {vehiculo._marca} {vehiculo._modelo}")
+            indice = int(input("Seleccione el número del vehículo a eliminar: ")) - 1
 
-# Registrar uso en vehículos de transporte
-camioneta.registrar_viaje(120)  # 120 km
-camion.registrar_viaje(450)    # 450 km
+            if 0 <= indice < len(vehiculos):
+                eliminado = vehiculos.pop(indice)
+                print(f"Vehículo {eliminado._marca} {eliminado._modelo} eliminado.")
+            else:
+                print("Selección inválida.")
 
-# Registrar uso en maquinaria pesada
-gallineta.registrar_horas_trabajo(5)  # 5 horas
-retroexcavadora.registrar_horas_trabajo(8)  # 8 horas
+    elif opcion == "5":
+        print("Saliendo del sistema. ¡Hasta luego!")
+        break
 
-# Mostrar información actualizada
-print(camioneta.mostrar_informacion())
-print(camion.mostrar_informacion())
-print(gallineta.mostrar_informacion())
-print(retroexcavadora.mostrar_informacion())
-
-# Registrar mantenimiento
-camioneta.registrar_mantenimiento()
-retroexcavadora.registrar_mantenimiento()
-
-# Cambiar estado a operativo después del mantenimiento
-camioneta.cambiar_a_operativo()
-retroexcavadora.cambiar_a_operativo()
-
-# Mostrar información actualizada
-print(camioneta.mostrar_informacion())
-print(retroexcavadora.mostrar_informacion())
-
-# Listado de todos los vehículos y maquinaria
-vehiculos = [camioneta, camion]
-maquinarias = [gallineta, retroexcavadora]
-
-# Calcular kilómetros totales recorridos por vehículos de transporte
-total_kilometraje = sum(v._kilometraje for v in vehiculos)
-print(f"Total de kilómetros recorridos por vehículos de transporte: {total_kilometraje} km")
-
-# Calcular horas totales trabajadas por maquinaria pesada
-total_horas = sum(m._horometro for m in maquinarias)
-print(f"Total de horas trabajadas por maquinaria pesada: {total_horas} horas")
-
-# Mostrar todos los equipos disponibles
-print("Vehículos disponibles:")
-for v in vehiculos:
-    if v._estado == "Operativo":
-        print(v.mostrar_informacion())
-
-print("Maquinaria pesada disponible:")
-for m in maquinarias:
-    if m._estado == "Operativo":
-        print(m.mostrar_informacion())
+    else:
+        print("Opción inválida. Intente nuevamente.")
